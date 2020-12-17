@@ -1,0 +1,10 @@
+{
+  "_template": "https://github.com/cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Rob Thatcher",
+  "email": "thatcr@gmail.com",
+  "friendly_name": "Snake Shifter",
+  "github_user": "thatcr",
+  "package_name": "snake_shifter",
+  "project_name": "snake-shifter",
+  "version": "0.0.0"
+}
