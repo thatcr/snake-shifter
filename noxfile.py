@@ -100,7 +100,9 @@ def safety(session: Session) -> None:
     """Scan dependencies for insecure packages."""
     requirements = nox_poetry.export_requirements(session)
     session.install("safety")
-    session.run("safety", "check", f"--file={requirements}", "--full-report")
+    session.run("safety", "check", "--full-report", f"--file={requirements}",
+        "--ignore", "39462"
+    )
 
 
 @nox.session(python=python_versions)
