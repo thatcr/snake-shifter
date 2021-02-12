@@ -1,6 +1,6 @@
 """Implementation of call tracker using a function wrapper via a decorator.
 
-This a refernce implementation to make it clear how the
+This a reference implementation to make it clear how the
 handler interacts with the function and to provide a
 benchmark implementation to test the other approaches against.
 """
@@ -51,7 +51,7 @@ def node(func):
             if type(value) is Exception:
                 raise value.args[0] from value.args[0]
 
-            return handler[key]
+            return value
         try:
             retval = func(*args, **kwargs)
             handler[key] = retval
