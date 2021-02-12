@@ -14,6 +14,9 @@ classifiers = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
 ]
+packages=[
+    { include="snake/shifter", from="src" }
+]
 
 [tool.poetry.urls]
 Changelog = "https://github.com/thatcr/snake-shifter/releases"
@@ -21,12 +24,6 @@ Changelog = "https://github.com/thatcr/snake-shifter/releases"
 [tool.poetry.dependencies]
 python = "^3.6.1"
 click = "^7.0"
-pytest-watch = "^4.2.0"
-pytest-sugar = "^0.9.4"
-pytest-cov = "^2.11.1"
-env_config = "^1.10.0"
-rich = "^9.10.0"
-pytest-black = "^0.3.12"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"
@@ -52,6 +49,11 @@ sphinx-rtd-theme = "^0.5.0"
 sphinx-click = "^2.5.0"
 Pygments = "^2.7.2"
 rope = "^0.18.0"
+pytest-watch = "^4.2.0"
+pytest-sugar = "^0.9.4"
+pytest-cov = "^2.11.1"
+env_config = "^1.10.0"
+rich = "^9.10.0"
 
 [tool.poetry.scripts]
 snake-shifter = "snake_shifter.__main__:main"
