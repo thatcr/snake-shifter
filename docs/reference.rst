@@ -6,8 +6,8 @@ Reference
     :backlinks: none
 
 
-snake_shifter.__main__
+snake.shifter.__main__
 ----------------------
 
-.. automodule:: snake_shifter.__main__
+.. automodule:: snake.shifter.__main__
    :members:
