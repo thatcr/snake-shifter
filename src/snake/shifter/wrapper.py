@@ -9,11 +9,14 @@ import inspect
 from collections import namedtuple
 from typing import Any
 from typing import Callable
+from typing import TypeVar
 
 from .context import CallKey
 
+T = TypeVar("T")
 
-def node(func: Callable[..., Any]) -> Callable[..., Any]:
+
+def node(func: Callable[..., T]) -> Callable[..., T]:
     """Wrap a function with calls to a handler to modify it's behaviour.
 
     Args:
@@ -44,11 +47,11 @@ def node(func: Callable[..., Any]) -> Callable[..., Any]:
     )
 
     # import the global context handler stack here, which we bind into the wrapper
-    from .context import _handlers
+    from .context import Context
 
     @functools.wraps(func)
     def _func(*args: Any, **kwargs: Any) -> Any:
-        handler = _handlers[-1]
+        handler = Context._handlers[-1]
 
         bound = sig.bind(*args, **kwargs)
         bound.apply_defaults()
@@ -68,5 +71,5 @@ def node(func: Callable[..., Any]) -> Callable[..., Any]:
             handler[key] = Exception(exc)
             raise
 
-    _func.key = key_type  # type: ignore
+    _func.__key__ = key_type  # type: ignore
     return _func
