@@ -1,5 +1,5 @@
 """Test some simple combinations of functions and handlers."""
-from typing import cast
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
@@ -7,11 +7,18 @@ import pytest
 import snake.shifter.wrapper
 from snake.shifter import CallableDecorator
 from snake.shifter import CallHandler
+from snake.shifter import CallKey
 from snake.shifter import Context
 from snake.shifter import key
 
 
 decorators = [snake.shifter.wrapper.node]
+
+
+class DictCallHandler(dict[CallKey, Any], CallHandler):
+    """Handler that just defers to dict to cache results."""
+
+    pass
 
 
 @pytest.mark.parametrize("decorator", decorators)
@@ -26,7 +33,7 @@ def test_simple_func(
 
     assert repr(key(f, 1, 2)) == f"{__name__}.f(a=1, b=2)"
 
-    with Context(cast(CallHandler, {})) as d:
+    with Context(DictCallHandler()) as d:
         f(1, 2)
         f(1, 2)
 
@@ -49,7 +56,7 @@ def test_simple_failing_func(decorator: CallableDecorator) -> None:
 
         raise exception
 
-    with Context(cast(CallHandler, {})) as d:
+    with Context(DictCallHandler()) as d:
         try:
             f(1, 2)
         except RuntimeError as e:
