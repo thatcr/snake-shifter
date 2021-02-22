@@ -1,5 +1,6 @@
 """Test some simple combinations of functions and handlers."""
 from typing import Any
+from typing import Dict
 from unittest.mock import MagicMock
 
 import pytest
@@ -15,7 +16,7 @@ from snake.shifter import key
 decorators = [snake.shifter.wrapper.node]
 
 
-class DictCallHandler(dict[CallKey, Any], CallHandler):
+class DictCallHandler(Dict[CallKey, Any], CallHandler):
     """Handler that just defers to dict to cache results."""
 
     pass
