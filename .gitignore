@@ -1,5 +1,6 @@
 .mypy_cache/
 .coverage*
+!.coveragerc
 /.nox/
 /.pytype/
 /dist/

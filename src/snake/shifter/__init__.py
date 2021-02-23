@@ -15,11 +15,19 @@ def key(func: Callable[..., Any], *args: Any, **kwargs: Any) -> CallKey:
 
 
 class CallableDecorator:
-    """Type definition for function transformation decorator."""
+    """Type definition for function transformation decorator.
+
+    Example:
+        >>> @CallableDecorator()
+        >>> def f(a, b):
+                return a + b
+        >>> CallableDecorator(f) is f
+        True
+    """
 
     def __call__(self, func: Callable[..., Any]) -> Callable[..., Any]:
         """Convert a regular Callable definition to a shifted one."""
-        pass
+        pass  # pragma: no cover
 
 
 __all__ = ["Context", "key", "CallHandler", "CallKey", "CallableDecorator"]

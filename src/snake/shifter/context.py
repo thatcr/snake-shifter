@@ -12,7 +12,7 @@ from typing import Type
 class CallKey(Tuple[Any, ...]):
     """A call key refers to a function call and is a tupleof it's arguments."""
 
-    pass
+    pass  # pragma: no cover
 
 
 class CallHandler(metaclass=ABCMeta):
@@ -21,17 +21,17 @@ class CallHandler(metaclass=ABCMeta):
     @abstractmethod
     def __contains__(self, key: CallKey) -> bool:
         """Test to see if this call should be handled by the __getitem__."""
-        return False
+        return False  # pragma: no cover
 
     @abstractmethod
     def __getitem__(self, key: CallKey) -> Any:
         """Return the value to return for a call."""
-        return NotImplemented
+        return NotImplemented  # pragma: no cover
 
     @abstractmethod
     def __setitem__(self, key: CallKey, value: Any) -> None:
         """Receive the value calculated for a call."""
-        return None
+        return None  # pragma: no cover
 
 
 class NullHandler(CallHandler):
