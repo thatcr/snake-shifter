@@ -13,7 +13,7 @@ from snake.shifter import Context
 from snake.shifter import key
 
 
-decorators = [snake.shifter.wrapper.node]
+decorators = [snake.shifter.wrapper.shift]
 
 
 class DictCallHandler(Dict[CallKey, Any], CallHandler):
@@ -107,8 +107,6 @@ def test_mock_cached_handler(decorator: CallableDecorator) -> None:
 
     with Context(handler):
         assert f(1, 2) is Ellipsis
-
-    print(handler.__getitem__.mock_calls)
 
     handler.__contains__.assert_called_once_with(key(f, 1, 2))
     handler.__getitem__.assert_called_once_with(key(f, 1, 2))

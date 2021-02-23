@@ -16,7 +16,7 @@ from .context import CallKey
 T = TypeVar("T")
 
 
-def node(func: Callable[..., T]) -> Callable[..., T]:
+def shift(func: Callable[..., T]) -> Callable[..., T]:
     """Wrap a function with calls to a handler to modify it's behaviour.
 
     Args:

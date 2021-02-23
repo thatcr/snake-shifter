@@ -35,7 +35,13 @@ class CallHandler(metaclass=ABCMeta):
 
 
 class NullHandler(CallHandler):
-    """Handler that does nothing."""
+    """Handler that does nothing.
+
+    Example:
+        >>> handler = NullHandler()
+        >>> 1 in handler
+        False
+    """
 
     def __contains__(self, key: CallKey) -> bool:
         """Avoid handling anything."""
