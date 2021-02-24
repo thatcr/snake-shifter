@@ -1,9 +1,0 @@
-[run]
-branch = True
-source = snake.shifter
-
-[xml]
-output=cov.xml
-
-[html]
-directory=htmlcov

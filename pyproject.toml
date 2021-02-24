@@ -56,25 +56,31 @@ env_config = "^1.10.0"
 rich = "^9.10.0"
 
 [tool.poetry.scripts]
-snake-shifter = "snake_shifter.__main__:main"
+snake-shifter = "snake.shifter.__main__:main"
 
 [tool.coverage.paths]
-source = ["src", "*/site-packages"]
+source = ["src/", "*/site-packages"]
 
 [tool.coverage.run]
 branch = true
-source = ["snake_shifter"]
+source = ["tests/", "src/"]
+source_pkgs = [ "snake.shifter"]
 
 [tool.coverage.report]
 show_missing = true
 fail_under = 100
 
+
+[tool.pytest.ini_options]
+addopts = [
+    "--xdoctest"
+]
+testpaths = [
+    "tests/",
+    "src/"
+]
+
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-addopts = "--cov=snake"
-testpaths = [
-    "tests",
-]
