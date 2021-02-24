@@ -59,7 +59,7 @@ rich = "^9.10.0"
 snake-shifter = "snake.shifter.__main__:main"
 
 [tool.coverage.paths]
-source = ["src", "*/site-packages"]
+source = ["*/src", "*/site-packages"]
 
 [tool.coverage.run]
 branch = true
