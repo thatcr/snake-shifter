@@ -131,7 +131,6 @@ def tests(session: Session) -> None:
             "--parallel",
             "-m",
             "pytest",
-            "--xdoctest",
             *session.posargs,
         )
     finally:
