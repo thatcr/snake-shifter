@@ -15,7 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
 ]
 packages=[
-    { include="snake/shifter", from="src" }
+    { include="snake", from="src" }
 ]
 
 [tool.poetry.urls]
@@ -59,20 +59,15 @@ rich = "^9.10.0"
 snake-shifter = "snake.shifter.__main__:main"
 
 [tool.coverage.paths]
-source = [
-    "src",
-    "**/site-packages"
-]
+source = ["src", "*/site-packages"]
 
 [tool.coverage.run]
 branch = true
-source = ["tests/", "src/"]
-source_pkgs = [ "snake.shifter"]
+source = ["snake.shifter", "tests/"]
 
 [tool.coverage.report]
 show_missing = true
 fail_under = 100
-
 
 [tool.pytest.ini_options]
 addopts = [
@@ -82,7 +77,6 @@ testpaths = [
     "tests/",
     "src/"
 ]
-
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
