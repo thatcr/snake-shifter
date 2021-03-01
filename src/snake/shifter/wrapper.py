@@ -25,7 +25,7 @@ def shift(func: Callable[..., T]) -> Callable[..., T]:
         the modified function
     """
     key_type = make_key_type(func)
-    signature = key_type.__signature__
+    signature = key_type.__signature__  # type: ignore
 
     # import the global context handler stack here, which we bind into the wrapper
     from .context import Context

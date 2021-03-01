@@ -49,7 +49,7 @@ class Context(object):
         Context._handlers.append(self.handler)
         return self.handler
 
-    def __exit__(
+    def __exit__(  # type: ignore
         self,
         exc_type: Optional[Type[BaseException]],
         exc_value: Optional[BaseException],
