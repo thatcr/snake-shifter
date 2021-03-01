@@ -5,13 +5,12 @@ handler interacts with the function and to provide a
 benchmark implementation to test the other approaches against.
 """
 import functools
-import inspect
-from collections import namedtuple
 from typing import Any
 from typing import Callable
 from typing import TypeVar
 
-from .context import CallKey
+from .key_type import make_key_type
+
 
 T = TypeVar("T")
 
@@ -25,26 +24,8 @@ def shift(func: Callable[..., T]) -> Callable[..., T]:
     Returns:
         the modified function
     """
-    sig = inspect.signature(func)
-
-    # patch the repr so we display the full function name
-    repr_fmt = "(" + ", ".join(f"{name}=%r" for name in sig.parameters.keys()) + ")"
-
-    def _repr(self: Any) -> Any:
-        return self.__module__ + "." + self.__class__.__name__ + repr_fmt % self
-
-    key_type = type(
-        func.__name__,
-        (
-            namedtuple(
-                func.__name__,
-                sig.parameters.keys(),
-                module=func.__module__,
-            ),
-            CallKey,
-        ),
-        {"__repr__": _repr, "__func__": func, "__module__": func.__module__},
-    )
+    key_type = make_key_type(func)
+    signature = key_type.__signature__
 
     # import the global context handler stack here, which we bind into the wrapper
     from .context import Context
@@ -53,7 +34,9 @@ def shift(func: Callable[..., T]) -> Callable[..., T]:
     def _func(*args: Any, **kwargs: Any) -> Any:
         handler = Context._handlers[-1]
 
-        bound = sig.bind(*args, **kwargs)
+        # this is slow, replace with a lookup (or defer to the
+        # bytecode version for speed)
+        bound = signature.bind(*args, **kwargs)
         bound.apply_defaults()
         key = key_type(*bound.args)
 
