@@ -2,7 +2,7 @@
 from snake.shifter.key_type import make_key_type
 
 
-def test_key_equality() -> None:
+def test_equality() -> None:
     """Verify that key hashes are sensible - namedtuples are not."""
 
     def f(a, b):
@@ -31,3 +31,14 @@ def test_key_equality() -> None:
     d[g_type(1, 2)] = 2
 
     assert len(d) == 2
+
+
+def test_repr() -> None:
+    """Check we get a nice printable signature."""
+
+    def f(a, b):
+        return a + b
+
+    f_type = make_key_type(f)
+
+    assert repr(f_type(1, 2)) == "tests.test_key_type.f(a=1, b=2)"
