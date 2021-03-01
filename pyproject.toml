@@ -53,7 +53,7 @@ pytest-watch = "^4.2.0"
 pytest-sugar = "^0.9.4"
 pytest-cov = "^2.11.1"
 env_config = "^1.10.0"
-rich = "^9.10.0"
+rich = "^9.12.3"
 
 [tool.poetry.scripts]
 snake-shifter = "snake.shifter.__main__:main"
