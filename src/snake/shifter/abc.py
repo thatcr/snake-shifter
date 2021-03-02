@@ -26,7 +26,7 @@ class CallHandler(metaclass=ABCMeta):
     @abstractmethod
     def __getitem__(self, key: CallKey) -> Any:
         """Return the value to return for a call."""
-        return NotImplemented  # pragma: no cover
+        raise NotImplementedError
 
     @abstractmethod
     def __setitem__(self, key: CallKey, value: Any) -> None:

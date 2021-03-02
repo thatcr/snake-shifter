@@ -17,6 +17,7 @@ nox.options.sessions = (
     "tests",
     "typeguard",
     "docs-build",
+    "coverage",
 )
 
 
@@ -139,20 +140,20 @@ def tests(session: Session) -> None:
         pass
 
 
-# @session
-# def coverage(session: Session) -> None:
-#     """Produce the coverage report."""
-#     # Do not use session.posargs unless this is the only session.
-#     nsessions = len(session._runner.manifest)  # type: ignore[attr-defined]
-#     has_args = session.posargs and nsessions == 1
-#     args = session.posargs if has_args else ["report"]
+@session
+def coverage(session: Session) -> None:
+    """Produce the coverage report."""
+    # Do not use session.posargs unless this is the only session.
+    nsessions = len(session._runner.manifest)  # type: ignore[attr-defined]
+    has_args = session.posargs and nsessions == 1
+    args = session.posargs if has_args else ["report"]
 
-#     session.install("coverage[toml]")
+    session.install("coverage[toml]")
 
-#     if not has_args and any(Path().glob(".coverage.*")):
-#         session.run("coverage", "combine")
+    if not has_args and any(Path().glob(".coverage.*")):
+        session.run("coverage", "combine")
 
-#     session.run("coverage", *args)
+    session.run("coverage", *args)
 
 
 @session(python=python_versions)

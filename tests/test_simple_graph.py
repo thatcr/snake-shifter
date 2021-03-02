@@ -38,7 +38,7 @@ class ParentCallHandler(CallHandler):
 
     def __getitem__(self, key: CallKey) -> Any:
         """Never called, we don't intercept return values."""
-        return NotImplemented
+        raise NotImplementedError
 
     def __setitem__(self, key: CallKey, value: Any) -> None:
         """Pop call from stack."""

@@ -6,6 +6,7 @@
 /docs/_build/
 /src/*.egg-info/
 __pycache__/
-cov.xml
+cov*.xml
 .vscode/.ropeproject/
 scratch*
+htmlcov/
