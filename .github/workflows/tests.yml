@@ -29,6 +29,23 @@ jobs:
       NOXSESSION: ${{ matrix.session }}
 
     steps:
+      - name: Setup Honeycomb build evenets
+        uses: kvrhdn/gha-buildevents@v1
+        with:
+          # Required: a Honeycomb API key - needed to send traces.
+          apikey: ${{ secrets.BUILDEVENTS_APIKEY }}
+
+          # Required: the Honeycomb dataset to send traces to.
+          dataset: gha-buildevents_integration
+
+          # Required: the job status, this will be used in the post section and sent
+          # as status of the trace. Must always be ${{ job.status }}.
+          job-status: ${{ job.status }}
+
+          # Optional: this should only be used in combination with matrix builds. Set
+          # this to a value uniquely describing each matrix configuration.
+          matrix-key: ${{ matrix.session }}-py${{ matrix.python-version }}-${{ matrix.os }}
+
       - name: Check out the repository
         uses: actions/checkout@v2.3.4
 
