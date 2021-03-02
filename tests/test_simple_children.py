@@ -18,22 +18,22 @@ from snake.shifter.abc import Decorator
 decorators = [snake.shifter.wrapper.shift]
 
 
-class ParentCallHandler(CallHandler):
+class ChildCallHandler(CallHandler):
     """Store the set of calls that each call makes."""
 
     stack: List[Optional[CallKey]]
-    parents: Dict[Optional[CallKey], MutableSet[CallKey]]
+    children: Dict[Optional[CallKey], MutableSet[CallKey]]
 
     def __init__(self) -> None:
         """Create a call stack, and start with an empty call."""
         self.stack = [None]
-        self.parents = {None: set()}
+        self.children = {None: set()}
 
     def __contains__(self, key: CallKey) -> bool:
         """Register call with the parent, push onto stack."""
-        self.parents[self.stack[-1]].add(key)
+        self.children[self.stack[-1]].add(key)
         self.stack.append(key)
-        self.parents[key] = set()
+        self.children[key] = set()
         return False
 
     def __getitem__(self, key: CallKey) -> Any:
@@ -46,7 +46,7 @@ class ParentCallHandler(CallHandler):
 
 
 @pytest.mark.parametrize("decorator", decorators)
-def test_simple_parents(decorator: Decorator) -> None:
+def test_simple_children(decorator: Decorator) -> None:
     """Verify we construct an accurate call graph."""
 
     @decorator
@@ -60,13 +60,13 @@ def test_simple_parents(decorator: Decorator) -> None:
     a = 1
     b = 2
 
-    handler = ParentCallHandler()
+    handler = ChildCallHandler()
     with Context(handler):
         g(a, b)
 
-    assert None in handler.parents
-    assert handler.parents[key(f, a, b)] == set()
-    assert handler.parents[key(g, a, b)] == {key(f, a, b)}
-    assert handler.parents[None] == {key(g, a, b)}
+    assert None in handler.children
+    assert handler.children[key(f, a, b)] == set()
+    assert handler.children[key(g, a, b)] == {key(f, a, b)}
+    assert handler.children[None] == {key(g, a, b)}
 
-    assert key(f, a, b) in handler.parents
+    assert key(f, a, b) in handler.children
