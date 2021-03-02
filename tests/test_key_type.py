@@ -5,17 +5,17 @@ from snake.shifter.key_type import make_key_type
 def test_equality() -> None:
     """Verify that key hashes are sensible - namedtuples are not."""
 
-    def f(a, b):
+    def f(a: int, b: int) -> int:
         return a + b
 
-    def g(a, b):
+    def g(a: int, b: int) -> int:
         return f(a, b)
 
     f_type = make_key_type(f)
     g_type = make_key_type(g)
 
-    assert f_type.__func__ is f
-    assert g_type.__func__ is g
+    assert f_type.__func__ is f  # type: ignore
+    assert g_type.__func__ is g  # type: ignore
 
     assert f_type is not g_type
     assert f_type != g_type
@@ -36,7 +36,7 @@ def test_equality() -> None:
 def test_repr() -> None:
     """Check we get a nice printable signature."""
 
-    def f(a, b):
+    def f(a: int, b: int) -> int:
         return a + b
 
     f_type = make_key_type(f)

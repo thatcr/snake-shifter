@@ -2,7 +2,11 @@
 from abc import ABCMeta
 from abc import abstractmethod
 from typing import Any
+from typing import Callable
 from typing import Tuple
+from typing import TypeVar
+
+from typing_extensions import Protocol
 
 
 class CallKey(Tuple[Any, ...]):
@@ -28,3 +32,14 @@ class CallHandler(metaclass=ABCMeta):
     def __setitem__(self, key: CallKey, value: Any) -> None:
         """Receive the value calculated for a call."""
         return None  # pragma: no cover
+
+
+F = TypeVar("F", bound=Callable[..., Any])
+
+
+class Decorator(Protocol):
+    """Protocol for transforming a function to a shifted function."""
+
+    def __call__(self, func: F) -> F:
+        """Shift the function."""
+        pass

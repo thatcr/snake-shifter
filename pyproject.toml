@@ -24,6 +24,7 @@ Changelog = "https://github.com/thatcr/snake-shifter/releases"
 [tool.poetry.dependencies]
 python = "^3.6.1"
 click = "^7.0"
+typing-extensions = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.2"

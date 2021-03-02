@@ -1036,7 +1036,7 @@ test = ["pytest", "typing-extensions", "mypy"]
 name = "typing-extensions"
 version = "3.7.4.3"
 description = "Backported and Experimental Type Hints for Python 3.5+"
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -1119,7 +1119,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.1"
-content-hash = "9aaf1947a16118013575be5ba8038e373fcb920e9b37b193c0d52abc088b0cac"
+content-hash = "5f30343636bb6db648ff516521d431cdb583ffd8c84953776f48975fba72b95c"
 
 [metadata.files]
 alabaster = [

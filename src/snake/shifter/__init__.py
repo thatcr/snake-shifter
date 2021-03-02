@@ -4,6 +4,7 @@ from typing import Callable
 
 from .abc import CallHandler
 from .abc import CallKey
+from .abc import Decorator
 from .context import Context
 
 
@@ -14,12 +15,4 @@ def key(func: Callable[..., Any], *args: Any, **kwargs: Any) -> CallKey:
     return func.__key__(*args, **kwargs)  # type: ignore
 
 
-class CallableDecorator:
-    """Type definition for function transformation decorator."""
-
-    def __call__(self, func: Callable[..., Any]) -> Callable[..., Any]:
-        """Convert a regular Callable definition to a shifted one."""
-        pass  # pragma: no cover
-
-
-__all__ = ["Context", "key", "CallHandler", "CallKey", "CallableDecorator"]
+__all__ = ["Context", "key", "CallHandler", "CallKey", "Decorator"]

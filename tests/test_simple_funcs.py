@@ -6,10 +6,10 @@ from unittest.mock import MagicMock
 import pytest
 
 import snake.shifter.wrapper
-from snake.shifter import CallableDecorator
 from snake.shifter import CallHandler
 from snake.shifter import CallKey
 from snake.shifter import Context
+from snake.shifter import Decorator
 from snake.shifter import key
 
 
@@ -24,7 +24,7 @@ class DictCallHandler(Dict[CallKey, Any], CallHandler):
 
 @pytest.mark.parametrize("decorator", decorators)
 def test_simple_func(
-    decorator: CallableDecorator,
+    decorator: Decorator,
 ) -> None:
     """Check we can construct a key, and cache in a dict."""
 
@@ -42,7 +42,7 @@ def test_simple_func(
 
 
 @pytest.mark.parametrize("decorator", decorators)
-def test_simple_failing_func(decorator: CallableDecorator) -> None:
+def test_simple_failing_func(decorator: Decorator) -> None:
     """Check we can construct a key, and cache in a dict."""
     # store a ref to the thrown exception outside the function
     # so we can check it's the same one returned
@@ -71,7 +71,7 @@ def test_simple_failing_func(decorator: CallableDecorator) -> None:
 
 
 @pytest.mark.parametrize("decorator", decorators)
-def test_mock_null_handler(decorator: CallableDecorator) -> None:
+def test_mock_null_handler(decorator: Decorator) -> None:
     """Check that a null mock handler is called correctly."""
     handler = MagicMock()
     handler.__contains__.return_value = False
@@ -91,11 +91,12 @@ def test_mock_null_handler(decorator: CallableDecorator) -> None:
 
 
 @pytest.mark.parametrize("decorator", decorators)
-def test_mock_cached_handler(decorator: CallableDecorator) -> None:
+def test_mock_cached_handler(decorator: Decorator) -> None:
     """Check that a fixed value mock handler is called correctly."""
+    return_value = -1
     handler = MagicMock()
     handler.__contains__.return_value = True
-    handler.__getitem__.return_value = Ellipsis
+    handler.__getitem__.return_value = return_value
     handler.__setitem__.return_value = None
 
     @decorator
@@ -106,7 +107,7 @@ def test_mock_cached_handler(decorator: CallableDecorator) -> None:
         f(1, 2)
 
     with Context(handler):
-        assert f(1, 2) is Ellipsis
+        assert f(1, 2) is return_value
 
     handler.__contains__.assert_called_once_with(key(f, 1, 2))
     handler.__getitem__.assert_called_once_with(key(f, 1, 2))

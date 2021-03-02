@@ -3,12 +3,11 @@ import inspect
 from collections import namedtuple
 from typing import Any
 from typing import Callable
-from typing import Type
 
 from .abc import CallKey
 
 
-def make_key_type(func: Callable[..., Any]) -> Type[CallKey]:
+def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
     """Construct a type representing a functions signature."""
     sig = inspect.signature(func)
 
