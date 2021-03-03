@@ -1,10 +1,10 @@
 """Test simple handler and context combinations."""
 import pytest
 
-from snake.shifter import CallKey
 from snake.shifter.context import Context
 from snake.shifter.context import get_handler
 from snake.shifter.context import NullHandler
+from snake.shifter.typing import CallKey
 
 
 def test_null_handler() -> None:

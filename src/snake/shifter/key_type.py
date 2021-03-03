@@ -4,7 +4,7 @@ from collections import namedtuple
 from typing import Any
 from typing import Callable
 
-from .abc import CallKey
+from .typing import CallKey
 
 
 def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:

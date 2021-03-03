@@ -13,10 +13,10 @@ from typing import TypeVar
 from .key_type import make_key_type
 
 
-T = TypeVar("T")
+F = TypeVar("F", bound=Callable[..., Any])
 
 
-def shift(func: Callable[..., T]) -> Callable[..., T]:
+def shift(func: F) -> F:
     """Wrap a function with calls to a handler to modify it's behaviour.
 
     Args:
@@ -56,4 +56,4 @@ def shift(func: Callable[..., T]) -> Callable[..., T]:
             raise
 
     _func.__key__ = key_type  # type: ignore
-    return cast(Callable[..., T], _func)
+    return cast(F, _func)

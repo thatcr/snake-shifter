@@ -5,11 +5,11 @@ from typing import List
 from typing import Optional
 from typing import Type
 
-from .abc import CallHandler
-from .abc import CallKey
+from .typing import CallHandler
+from .typing import CallKey
 
 
-class NullHandler(CallHandler):
+class NullHandler:
     """Handler that does nothing.
 
     Example:

@@ -8,12 +8,11 @@ from typing import Optional
 
 from snake.shifter import Context
 from snake.shifter import key
-from snake.shifter.abc import CallHandler
-from snake.shifter.abc import CallKey
-from snake.shifter.abc import Decorator
+from snake.shifter.typing import CallKey
+from snake.shifter.typing import Decorator
 
 
-class GraphCallHandler(CallHandler):
+class GraphCallHandler:
     """Store the set of calls that each call makes."""
 
     stack: List[Optional[CallKey]]
@@ -35,7 +34,7 @@ class GraphCallHandler(CallHandler):
         self.parents[key].add(self.stack[-1])
 
         if key in self.retvals:
-            return self.retvals[key]
+            return True
 
         self.stack.append(key)
         return False
