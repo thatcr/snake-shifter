@@ -4,7 +4,6 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import MutableSet
-from typing import Optional
 
 import pytest
 
@@ -22,8 +21,8 @@ decorators = [snake.shifter.wrapper.shift]
 class ParentCallHandler(CallHandler):
     """Store the set of calls that each call makes."""
 
-    stack: List[Optional[CallKey]]
-    children: Dict[Optional[CallKey], MutableSet[CallKey]]
+    stack: List[CallKey]
+    parents: Dict[CallKey, MutableSet[CallKey]]
 
     def __init__(self) -> None:
         """Create a call stack, and start with an empty call."""
