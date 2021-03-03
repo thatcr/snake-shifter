@@ -1,9 +1,10 @@
 """Base classes for core abstractions, typing."""
 from typing import Any
 from typing import Callable
-from typing import Protocol
 from typing import Tuple
 from typing import TypeVar
+
+from typing_extensions import Protocol
 
 
 class CallKey(Tuple[Any, ...]):
@@ -31,7 +32,7 @@ class CallHandler(Protocol):
 F = TypeVar("F", bound=Callable[..., Any])
 
 
-class Decorator:
+class Decorator(Protocol):
     """Protocol for transforming a function to a shifted function."""
 
     def __call__(self, func: F) -> F:
