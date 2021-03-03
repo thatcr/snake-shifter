@@ -5,15 +5,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
-import snake.shifter.wrapper
 from snake.shifter import CallHandler
 from snake.shifter import CallKey
 from snake.shifter import Context
 from snake.shifter import Decorator
 from snake.shifter import key
-
-
-decorators = [snake.shifter.wrapper.shift]
 
 
 class DictCallHandler(Dict[CallKey, Any], CallHandler):
@@ -22,7 +18,6 @@ class DictCallHandler(Dict[CallKey, Any], CallHandler):
     pass
 
 
-@pytest.mark.parametrize("decorator", decorators)
 def test_simple_func(
     decorator: Decorator,
 ) -> None:
@@ -41,7 +36,6 @@ def test_simple_func(
     assert d[key(f, 1, 2)] == 3
 
 
-@pytest.mark.parametrize("decorator", decorators)
 def test_simple_failing_func(decorator: Decorator) -> None:
     """Check we can construct a key, and cache in a dict."""
     # store a ref to the thrown exception outside the function
@@ -70,7 +64,6 @@ def test_simple_failing_func(decorator: Decorator) -> None:
     assert d[key(f, 1, 2)].args[0] is exception
 
 
-@pytest.mark.parametrize("decorator", decorators)
 def test_mock_null_handler(decorator: Decorator) -> None:
     """Check that a null mock handler is called correctly."""
     handler = MagicMock()
@@ -90,7 +83,6 @@ def test_mock_null_handler(decorator: Decorator) -> None:
     handler.__setitem__.assert_called_once_with(key(f, 1, 2), 3)
 
 
-@pytest.mark.parametrize("decorator", decorators)
 def test_mock_cached_handler(decorator: Decorator) -> None:
     """Check that a fixed value mock handler is called correctly."""
     return_value = -1

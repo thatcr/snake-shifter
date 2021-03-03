@@ -1,21 +1,15 @@
-"""Construct a simple caller/callee graph and test it's accurate."""
+"""Construct a simple call graph and test it's accurate."""
 from typing import Any
 from typing import Dict
 from typing import List
 from typing import MutableSet
 from typing import Optional
 
-import pytest
-
-import snake.shifter.wrapper
 from snake.shifter import Context
 from snake.shifter import key
 from snake.shifter.abc import CallHandler
 from snake.shifter.abc import CallKey
 from snake.shifter.abc import Decorator
-
-
-decorators = [snake.shifter.wrapper.shift]
 
 
 class ChildCallHandler(CallHandler):
@@ -45,7 +39,6 @@ class ChildCallHandler(CallHandler):
         self.stack.pop()
 
 
-@pytest.mark.parametrize("decorator", decorators)
 def test_simple_children(decorator: Decorator) -> None:
     """Verify we construct an accurate call graph."""
 
