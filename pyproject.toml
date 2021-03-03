@@ -72,9 +72,9 @@ show_missing = true
 fail_under = 100
 exclude_lines = [
     "pragma: no cover",
-    "raise NotImplementedError",
-    "pass"
+    "\\.\\.\\."
 ]
+
 
 [tool.pytest.ini_options]
 addopts = [

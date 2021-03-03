@@ -6,10 +6,10 @@ def test_equality() -> None:
     """Verify that key hashes are sensible - namedtuples are not."""
 
     def f(a: int, b: int) -> int:
-        raise NotImplementedError
+        ...
 
     def g(a: int, b: int) -> int:
-        raise NotImplementedError
+        ...
 
     f_type = make_key_type(f)
     g_type = make_key_type(g)
@@ -37,7 +37,7 @@ def test_repr() -> None:
     """Check we get a nice printable signature."""
 
     def f(a: int, b: int) -> int:
-        raise NotImplementedError
+        ...
 
     f_type = make_key_type(f)
 

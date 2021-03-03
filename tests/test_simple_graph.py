@@ -66,6 +66,7 @@ def test_simple_graph(decorator: Decorator) -> None:
     handler = GraphCallHandler()
     with Context(handler):
         g(a, b)
+        g(a, b)
 
     assert handler.parents[key(g, a, b)] == {None}
     assert handler.parents[key(f, a, b)] == {key(g, a, b)}
