@@ -17,7 +17,7 @@ class GraphCallHandler(CallHandler):
     """Store the set of calls that each call makes."""
 
     stack: List[Optional[CallKey]]
-    parents: Dict[CallKey, MutableSet[CallKey]]
+    parents: Dict[CallKey, MutableSet[Optional[CallKey]]]
     children: Dict[Optional[CallKey], MutableSet[CallKey]]
 
     def __init__(self) -> None:
