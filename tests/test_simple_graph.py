@@ -82,3 +82,8 @@ def test_simple_graph(decorator: Decorator) -> None:
     assert key(g, a, b) in handler.retvals
     assert handler.retvals[key(f, a, b)] == a + b
     assert handler.retvals[key(g, a, b)] == a + b
+
+    # tweak the cache, check it is used
+    handler.retvals[key(g, a, b)] = 123
+    with Context(handler):
+        assert g(a, b) == 123
