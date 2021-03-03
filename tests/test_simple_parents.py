@@ -4,6 +4,7 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import MutableSet
+from typing import Optional
 
 from snake.shifter import Context
 from snake.shifter import key
@@ -15,18 +16,17 @@ from snake.shifter.abc import Decorator
 class ParentCallHandler(CallHandler):
     """Store the set of calls that each call makes."""
 
-    stack: List[CallKey]
-    parents: Dict[CallKey, MutableSet[CallKey]]
+    stack: List[Optional[CallKey]]
+    parents: Dict[CallKey, MutableSet[Optional[CallKey]]]
 
     def __init__(self) -> None:
         """Create a call stack, and start with an empty call."""
-        self.stack = []
+        self.stack = [None]
         self.parents = defaultdict(set)
 
     def __contains__(self, key: CallKey) -> bool:
         """Register call with the parent, push onto stack."""
-        if self.stack:
-            self.parents[key].add(self.stack[-1])
+        self.parents[key].add(self.stack[-1])
         self.stack.append(key)
         return False
 
@@ -57,5 +57,5 @@ def test_simple_parents(decorator: Decorator) -> None:
     with Context(handler):
         g(a, b)
 
-    assert handler.parents[key(g, a, b)] == set()
+    assert handler.parents[key(g, a, b)] == {None}
     assert handler.parents[key(f, a, b)] == {key(g, a, b)}

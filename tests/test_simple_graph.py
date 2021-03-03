@@ -4,6 +4,7 @@ from typing import Any
 from typing import Dict
 from typing import List
 from typing import MutableSet
+from typing import Optional
 
 from snake.shifter import Context
 from snake.shifter import key
@@ -12,22 +13,25 @@ from snake.shifter.abc import CallKey
 from snake.shifter.abc import Decorator
 
 
-class ParentCallHandler(CallHandler):
+class GraphCallHandler(CallHandler):
     """Store the set of calls that each call makes."""
 
-    stack: List[CallKey]
+    stack: List[Optional[CallKey]]
     parents: Dict[CallKey, MutableSet[CallKey]]
+    children: Dict[Optional[CallKey], MutableSet[CallKey]]
 
     def __init__(self) -> None:
         """Create a call stack, and start with an empty call."""
-        self.stack = []
+        self.stack = [None]
         self.parents = defaultdict(set)
+        self.children = {None: set()}
 
     def __contains__(self, key: CallKey) -> bool:
         """Register call with the parent, push onto stack."""
-        if self.stack:
-            self.parents[key].add(self.stack[-1])
+        self.children[self.stack[-1]].add(key)
+        self.parents[key].add(self.stack[-1])
         self.stack.append(key)
+        self.children[key] = set()
         return False
 
     def __getitem__(self, key: CallKey) -> Any:
@@ -39,7 +43,7 @@ class ParentCallHandler(CallHandler):
         self.stack.pop()
 
 
-def test_simple_parents(decorator: Decorator) -> None:
+def test_simple_graph(decorator: Decorator) -> None:
     """Verify we construct an accurate call graph."""
 
     @decorator
@@ -53,9 +57,16 @@ def test_simple_parents(decorator: Decorator) -> None:
     a = 1
     b = 2
 
-    handler = ParentCallHandler()
+    handler = GraphCallHandler()
     with Context(handler):
         g(a, b)
 
-    assert handler.parents[key(g, a, b)] == set()
+    assert handler.parents[key(g, a, b)] == {None}
     assert handler.parents[key(f, a, b)] == {key(g, a, b)}
+
+    assert None in handler.children
+    assert handler.children[key(f, a, b)] == set()
+    assert handler.children[key(g, a, b)] == {key(f, a, b)}
+    assert handler.children[None] == {key(g, a, b)}
+
+    assert key(f, a, b) in handler.children
