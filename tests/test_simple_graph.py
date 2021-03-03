@@ -20,26 +20,33 @@ class GraphCallHandler(CallHandler):
     parents: Dict[CallKey, MutableSet[Optional[CallKey]]]
     children: Dict[Optional[CallKey], MutableSet[CallKey]]
 
+    retvals: Dict[CallKey, Any]
+
     def __init__(self) -> None:
         """Create a call stack, and start with an empty call."""
         self.stack = [None]
         self.parents = defaultdict(set)
-        self.children = {None: set()}
+        self.children = defaultdict(set)
+        self.retvals = dict()
 
     def __contains__(self, key: CallKey) -> bool:
         """Register call with the parent, push onto stack."""
         self.children[self.stack[-1]].add(key)
         self.parents[key].add(self.stack[-1])
+
+        if key in self.retvals:
+            return self.retvals[key]
+
         self.stack.append(key)
-        self.children[key] = set()
         return False
 
     def __getitem__(self, key: CallKey) -> Any:
         """Never called, we don't intercept return values."""
-        raise NotImplementedError
+        return self.retvals[key]
 
     def __setitem__(self, key: CallKey, value: Any) -> None:
         """Pop call from stack."""
+        self.retvals[key] = value
         self.stack.pop()
 
 
@@ -70,3 +77,8 @@ def test_simple_graph(decorator: Decorator) -> None:
     assert handler.children[None] == {key(g, a, b)}
 
     assert key(f, a, b) in handler.children
+
+    assert key(f, a, b) in handler.retvals
+    assert key(g, a, b) in handler.retvals
+    assert handler.retvals[key(f, a, b)] == a + b
+    assert handler.retvals[key(g, a, b)] == a + b
