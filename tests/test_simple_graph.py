@@ -6,6 +6,8 @@ from typing import List
 from typing import MutableSet
 from typing import Optional
 
+import pytest
+
 from snake.shifter import Context
 from snake.shifter import key
 from snake.shifter.typing import CallKey
@@ -87,3 +89,46 @@ def test_simple_graph(decorator: Decorator) -> None:
     handler.retvals[key(g, a, b)] = 123
     with Context(handler):
         assert g(a, b) == 123
+
+
+def test_simple_graph_exception(decorator: Decorator) -> None:
+    """Check we can construct a key, and cache in a dict."""
+    # store a ref to the thrown exception outside the function
+    # so we can check it's the same one returned
+    exception = None
+
+    @decorator
+    def f(a: int, b: int) -> int:
+        nonlocal exception
+        # this exception should be cached by the wrapper
+        # so we only see it once
+        exception = RuntimeError("failure")
+
+        raise exception
+
+    @decorator
+    def g(a: int, b: int) -> int:
+        return f(a, b)
+
+    a = 1
+    b = 2
+
+    handler = GraphCallHandler()
+    with Context(handler):
+        try:
+            g(a, b)
+        except RuntimeError as e:
+            assert e is exception
+
+        with pytest.raises(RuntimeError):
+            g(a, b)
+
+    # exceptions get cached twice - should this be the case, or do
+    # we re-call an throw from source?
+    assert type(handler.retvals[key(f, a, b)]) is Exception
+    assert type(handler.retvals[key(g, a, b)]) is Exception
+    assert handler.retvals[key(f, a, b)].args[0] is exception
+    assert handler.retvals[key(g, a, b)].args[0] is exception
+
+    assert handler.parents[key(g, a, b)] == {None}
+    assert handler.parents[key(f, a, b)] == {key(g, a, b)}
