@@ -14,8 +14,11 @@ def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
     # patch the repr so we display the full function name
     repr_fmt = "(" + ", ".join(f"{name}=%r" for name in sig.parameters.keys()) + ")"
 
-    def _repr(self: Any) -> Any:
+    def _repr(self: Any) -> str:
         return self.__module__ + "." + self.__class__.__name__ + repr_fmt % self[:-1]
+
+    def _rich(self: Any) -> str:
+        return repr(self)
 
     key_type = type(
         func.__name__,
@@ -33,6 +36,7 @@ def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
             "__func__": func,
             "__module__": func.__module__,
             "__signature__": sig,
+            "__rich__": _rich,
         },
     )
 

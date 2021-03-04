@@ -12,4 +12,5 @@ exclude =
     site-packages,
     build,
     dist,
-    .nox
+    .nox,
+    examples/*

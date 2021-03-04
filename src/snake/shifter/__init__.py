@@ -4,6 +4,7 @@ from typing import Callable
 
 from .context import Context
 from .typing import CallKey
+from .wrapper import shift
 
 
 def key(func: Callable[..., Any], *args: Any, **kwargs: Any) -> CallKey:
@@ -13,4 +14,4 @@ def key(func: Callable[..., Any], *args: Any, **kwargs: Any) -> CallKey:
     return func.__key__(*args, **kwargs)  # type: ignore
 
 
-__all__ = ["Context", "key"]
+__all__ = ["Context", "key", "shift"]
