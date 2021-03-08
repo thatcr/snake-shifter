@@ -41,13 +41,18 @@ def test_repr() -> None:
     def f(a: int, b: int, c: int = 3, d: Optional[None] = None) -> int:
         ...
 
-    f_type = make_key_type(f)
+    key_type = make_key_type(f)
 
-    assert repr(f_type(1, 2)) == "tests.test_key_type.f(a=1, b=2, c=3, d=None)"
-    assert repr(f_type(1, 2, 5)) == "tests.test_key_type.f(a=1, b=2, c=5, d=None)"
-    assert repr(f_type(1, 2, c=4)) == "tests.test_key_type.f(a=1, b=2, c=4, d=None)"
-    assert repr(f_type(1, 2, d=10)) == "tests.test_key_type.f(a=1, b=2, c=3, d=10)"
-    assert repr(f_type(1, 2, c=4, d=10)) == "tests.test_key_type.f(a=1, b=2, c=4, d=10)"
+    assert (
+        repr(key_type.from_call(1, 2)) == "tests.test_key_type.f(a=1, b=2, c=3, d=None)"
+    )
+    assert repr(key_type.from_call(1, 2, 5)) == f"{__name__}.f(a=1, b=2, c=5, d=None)"
+    assert repr(key_type.from_call(1, 2, c=4)) == f"{__name__}.f(a=1, b=2, c=4, d=None)"
+    assert repr(key_type.from_call(1, 2, d=10)) == f"{__name__}.f(a=1, b=2, c=3, d=10)"
+    assert (
+        repr(key_type.from_call(1, 2, c=4, d=10))
+        == f"{__name__}.f(a=1, b=2, c=4, d=10)"
+    )
 
 
 def test_args() -> None:
@@ -58,7 +63,7 @@ def test_args() -> None:
 
     key_type = make_key_type(f)
 
-    assert repr(key_type(1, 2)) == "test.test_key_type.f(a=1, b=2)"
+    assert repr(key_type.from_call(1, 2)) == f"{__name__}.f(args=(1, 2))"
 
 
 def test_kwargs() -> None:
@@ -69,4 +74,6 @@ def test_kwargs() -> None:
 
     key_type = make_key_type(f)
 
-    assert repr(key_type(1, 2)) == "test.test_key_type.f(a=1, b=2)"
+    assert (
+        repr(key_type.from_call(a=1, b=2)) == f"{__name__}.f(kwargs={{'a': 1, 'b': 2}})"
+    )

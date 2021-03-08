@@ -24,8 +24,18 @@ def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
             + repr_fmt.format(*self[:-1]),
         )
 
-    def _rich(self: Any) -> str:
-        return repr(self)
+    # build the tuple from a call signature - note we can't use
+    # the new/init from the named tuple as it won't unpack the
+    # same way as the function call.
+    @classmethod
+    def from_call(cls: Any, *args: Any, **kwargs: Any):
+        bound = sig.bind(*args, **kwargs)
+        bound.apply_defaults()
+
+        # this is wrong - how do we yunpack exactly the right args to mach
+        # the list in the tuple?
+
+        return key_type(*bound.arguments.values())
 
     key_type = type(
         func.__name__,
@@ -43,7 +53,7 @@ def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
             "__func__": func,
             "__module__": func.__module__,
             "__signature__": sig,
-            "__rich__": _rich,
+            "from_call": from_call,
         },
     )
 

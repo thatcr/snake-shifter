@@ -83,7 +83,7 @@ def test_mock_cached_handler(decorator: Decorator) -> None:
 
     @decorator
     def f(a: int, b: int) -> int:
-        raise AssertionError("this functino should not be called")
+        raise AssertionError("this function should not be called")
 
     with pytest.raises(AssertionError):
         f(1, 2)

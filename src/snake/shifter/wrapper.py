@@ -52,4 +52,5 @@ def shift(func: Callable[..., Any]) -> Callable[..., Any]:
             raise
 
     _func.__key__ = key_type  # type: ignore
+
     return cast(Callable[..., Any], _func)
