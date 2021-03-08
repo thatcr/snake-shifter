@@ -3,6 +3,7 @@ import inspect
 from collections import namedtuple
 from typing import Any
 from typing import Callable
+from typing import cast
 
 from .typing import CallKey
 
@@ -12,10 +13,16 @@ def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
     sig = inspect.signature(func)
 
     # patch the repr so we display the full function name
-    repr_fmt = "(" + ", ".join(f"{name}=%r" for name in sig.parameters.keys()) + ")"
+    repr_fmt = "(" + ", ".join(name + "={!r}" for name in sig.parameters.keys()) + ")"
 
     def _repr(self: Any) -> str:
-        return self.__module__ + "." + self.__class__.__name__ + repr_fmt % self[:-1]
+        return cast(
+            str,
+            self.__module__
+            + "."
+            + self.__class__.__name__
+            + repr_fmt.format(*self[:-1]),
+        )
 
     def _rich(self: Any) -> str:
         return repr(self)
