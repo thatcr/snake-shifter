@@ -4,15 +4,18 @@ from collections import namedtuple
 from typing import Any
 from typing import Callable
 from typing import cast
+from typing import Dict
+from typing import Tuple
+from typing import Type
 
 from .typing import CallKey
 
 
-def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
+def make_key_type(func: Callable[..., Any]) -> Type[CallKey]:
     """Construct a type representing a functions signature."""
     sig = inspect.signature(func)
 
-    # patch the repr so we display the full function name
+    # make a format string that unpacks and names the parameters nicely
     repr_fmt = (
         (
             func.__name__
@@ -24,21 +27,22 @@ def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
         + ")"
     )
 
+    # patch the repr so it looked pretty
     def _repr(self: Any) -> str:
-        return cast(str, repr_fmt.format(*self[:-1]))
+        return repr_fmt.format(*self[:-1])
 
     # build the tuple from a call signature - note we can't use
     # the new/init from the named tuple as it won't unpack the
     # same way as the function call.
-    @classmethod
-    def from_call(cls: Any, *args: Any, **kwargs: Any):
+    @classmethod  # type: ignore[misc]
+    def from_call(cls: Any, *args: Tuple[Any], **kwargs: Dict[str, Any]) -> CallKey:
         bound = sig.bind(*args, **kwargs)
         bound.apply_defaults()
 
         # this is wrong - how do we yunpack exactly the right args to mach
         # the list in the tuple?
 
-        return key_type(*bound.arguments.values())
+        return cast(CallKey, key_type(*bound.arguments.values()))
 
     key_type = type(
         func.__name__,

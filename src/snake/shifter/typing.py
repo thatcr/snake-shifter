@@ -1,16 +1,20 @@
 """Base classes for core abstractions, typing."""
 from typing import Any
 from typing import Callable
+from typing import Dict
 from typing import Tuple
 from typing import TypeVar
 
 from typing_extensions import Protocol
 
 
-class CallKey(Tuple[Any, ...]):
-    """A call key refers to a function call and is a tuple of it's arguments."""
+class CallKey(Protocol):
+    """A class representing the call signature of a function."""
 
-    pass
+    @classmethod
+    def from_call(cls, *args: Tuple[Any], **kwargs: Dict[str, Any]) -> "CallKey":
+        """Generate a call signature from supplied arguments."""
+        ...
 
 
 class CallHandler(Protocol):

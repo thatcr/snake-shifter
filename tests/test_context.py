@@ -4,14 +4,14 @@ import pytest
 from snake.shifter.context import Context
 from snake.shifter.context import get_handler
 from snake.shifter.context import NullHandler
-from snake.shifter.typing import CallKey
+from snake.shifter.key_type import make_key_type
 
 
 def test_null_handler() -> None:
     """Check null handlers does nothing."""
     null = NullHandler()
 
-    key = CallKey((id, 1))
+    key = make_key_type(id)(1)
 
     assert null.__contains__(key) is False
     with pytest.raises(NotImplementedError):

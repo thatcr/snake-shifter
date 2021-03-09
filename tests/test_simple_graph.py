@@ -1,6 +1,7 @@
 """Construct a simple call graph and test it's accurate."""
 from collections import defaultdict
 from typing import Any
+from typing import Callable
 from typing import Dict
 from typing import List
 from typing import Mapping
@@ -163,7 +164,7 @@ def test_simple_graph_exception(decorator: Decorator) -> None:
     assert handler.parents[key(f, a, b)] == {key(g, a, b)}
 
 
-def test_simple_graph_bump(decorator: Decorator) -> None:
+def test_simple_graph_bump(print: Callable[..., Any], decorator: Decorator) -> None:
     """Try bumping some functions and check that the graph is consistent."""
 
     @decorator

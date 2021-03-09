@@ -35,7 +35,7 @@ def shift(func: Callable[..., Any]) -> Callable[..., Any]:
         # bytecode version for speed)
         bound = signature.bind(*args, **kwargs)
         bound.apply_defaults()
-        key = key_type(*bound.args)
+        key = key_type(*bound.arguments.values())
 
         if key in handler:
             value = handler[key]

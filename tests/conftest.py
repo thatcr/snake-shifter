@@ -1,5 +1,6 @@
 """Common fixures for testing snake-shifter."""
 import sys
+from typing import Any
 
 import pytest
 from _pytest.python import Metafunc
@@ -19,17 +20,14 @@ def pytest_generate_tests(metafunc: Metafunc) -> None:
 
 
 @pytest.fixture(autouse=True, scope="session")
-def _rich_print(request):
+def print() -> Any:
     """Create a full-color rich terminal for logging."""
-    request.console = Console(
+    console = Console(
         force_terminal=True,
         force_interactive=False,
         file=sys.stdout,
         record=False,
     )
-    old_print = __builtins__["print"]
-    __builtins__["print"] = request.console.print
 
-    yield request.console.print
-
-    __builtins__["print"] = old_print
+    # with mock.patch.dict(__builtins__, {"print": console.print}):
+    return console.print
