@@ -3,8 +3,8 @@ from collections import defaultdict
 from typing import Any
 from typing import Dict
 from typing import List
-from typing import MutableSet
-from typing import Optional
+from typing import Mapping
+from typing import Set
 
 import pytest
 
@@ -17,23 +17,24 @@ from snake.shifter.typing import Decorator
 class GraphCallHandler:
     """Store the set of calls that each call makes."""
 
-    stack: List[Optional[CallKey]]
-    parents: Dict[CallKey, MutableSet[Optional[CallKey]]]
-    children: Dict[Optional[CallKey], MutableSet[CallKey]]
+    stack: List[CallKey]
+    parents: Dict[CallKey, Set[CallKey]]
+    children: Dict[CallKey, Set[CallKey]]
 
     retvals: Dict[CallKey, Any]
 
     def __init__(self) -> None:
         """Create a call stack, and start with an empty call."""
-        self.stack = [None]
+        self.stack = []
         self.parents = defaultdict(set)
         self.children = defaultdict(set)
         self.retvals = dict()
 
     def __contains__(self, key: CallKey) -> bool:
         """Register call with the parent, push onto stack."""
-        self.children[self.stack[-1]].add(key)
-        self.parents[key].add(self.stack[-1])
+        if self.stack:
+            self.children[self.stack[-1]].add(key)
+            self.parents[key].add(self.stack[-1])
 
         if key in self.retvals:
             return True
@@ -49,6 +50,36 @@ class GraphCallHandler:
         """Pop call from stack."""
         self.retvals[key] = value
         self.stack.pop()
+
+    def bump(self, changes: Mapping[CallKey, Any]) -> "GraphCallHandler":
+        """Create a new handler with some return values overridden."""
+        handler = GraphCallHandler()
+
+        handler.retvals = self.retvals.copy()
+
+        # duplicate all the children of nodes we haven't bumped
+        handler.children = defaultdict(
+            set, {k: v.copy() for k, v in self.children.items()}
+        )
+        handler.parents = defaultdict(
+            set, {k: v.copy() for k, v in self.parents.items()}
+        )
+
+        deps: List[CallKey] = list(changes.keys())
+        for dep in deps:
+            # if dep is not None:
+            deps.extend(handler.parents.pop(dep, set()))
+            handler.retvals.pop(dep, None)
+
+            # remove the parent link from any children
+            for child in handler.children.pop(dep, set()):
+                if child in handler.parents:
+                    handler.parents[child].remove(dep)
+
+        # override cached values with bumps
+        handler.retvals.update(changes)
+
+        return handler
 
 
 def test_simple_graph(decorator: Decorator) -> None:
@@ -70,13 +101,11 @@ def test_simple_graph(decorator: Decorator) -> None:
         g(a, b)
         g(a, b)
 
-    assert handler.parents[key(g, a, b)] == {None}
+    assert handler.parents[key(g, a, b)] == set()
     assert handler.parents[key(f, a, b)] == {key(g, a, b)}
 
-    assert None in handler.children
     assert handler.children[key(f, a, b)] == set()
     assert handler.children[key(g, a, b)] == {key(f, a, b)}
-    assert handler.children[None] == {key(g, a, b)}
 
     assert key(f, a, b) in handler.children
 
@@ -130,5 +159,39 @@ def test_simple_graph_exception(decorator: Decorator) -> None:
     assert handler.retvals[key(f, a, b)].args[0] is exception
     assert handler.retvals[key(g, a, b)].args[0] is exception
 
-    assert handler.parents[key(g, a, b)] == {None}
+    assert handler.parents[key(g, a, b)] == set()
     assert handler.parents[key(f, a, b)] == {key(g, a, b)}
+
+
+def test_simple_graph_bump(decorator: Decorator) -> None:
+    """Try bumping some functions and check that the graph is consistent."""
+
+    @decorator
+    def f(x: int) -> int:
+        return x
+
+    @decorator
+    def g(x: int, y: int) -> int:
+        return f(x) + f(y)
+
+    handler = GraphCallHandler()
+    with Context(handler):
+        assert g(1, 2) == 3
+        assert g(1, 3) == 4
+
+    print(handler.__dict__)
+
+    bumped = handler.bump({key(f, 1): 10})
+    with Context(bumped):
+        print(bumped.__dict__)
+
+        #
+        assert bumped.parents == {key(f, 2): set(), key(f, 3): set()}
+
+        # no nodes have any children left - we evicted them all
+        assert not bumped.children
+        assert bumped.retvals == {key(f, 2): 2, key(f, 3): 3, key(f, 1): 10}
+
+        assert g(1, 2) == 12
+
+    print(bumped.__dict__)
