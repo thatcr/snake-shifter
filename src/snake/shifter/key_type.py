@@ -13,16 +13,19 @@ def make_key_type(func: Callable[..., Any]) -> Callable[..., CallKey]:
     sig = inspect.signature(func)
 
     # patch the repr so we display the full function name
-    repr_fmt = "(" + ", ".join(name + "={!r}" for name in sig.parameters.keys()) + ")"
+    repr_fmt = (
+        (
+            func.__name__
+            if "<locals>" in func.__qualname__
+            else func.__module__ + "." + func.__qualname__
+        )
+        + "("
+        + ", ".join(name + "={!r}" for name in sig.parameters.keys())
+        + ")"
+    )
 
     def _repr(self: Any) -> str:
-        return cast(
-            str,
-            self.__module__
-            + "."
-            + self.__class__.__name__
-            + repr_fmt.format(*self[:-1]),
-        )
+        return cast(str, repr_fmt.format(*self[:-1]))
 
     # build the tuple from a call signature - note we can't use
     # the new/init from the named tuple as it won't unpack the

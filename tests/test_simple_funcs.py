@@ -17,8 +17,6 @@ def test_simple_func(
     def f(a: int, b: int) -> int:
         return a + b
 
-    assert repr(key(f, 1, 2)) == f"{__name__}.f(a=1, b=2)"
-
     with Context(dict()) as d:
         f(1, 2)
         f(1, 2)
